@@ -1,0 +1,22 @@
+{
+  "name": "business-landing-page",
+  "description": "Linkar Business Landing Page",
+  "main": "index.js",
+  "authors": [
+    "Lennon Jesus <lennon.jesus@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "linkar",
+    "business"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

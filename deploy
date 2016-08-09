@@ -1,0 +1,2 @@
+#!/bin/sh
+scp -r src/* root@lkr-static:/www_static_linkar/b2b/
