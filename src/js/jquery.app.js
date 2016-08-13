@@ -72,12 +72,17 @@ jQuery(function ($) {
         $contactFormBtn: $("#send"),
         $contactFormName: $("#name2"),
         $contactFormEmail: $("#email2"),
-        $contactFormMessage: $("#message2"),
+        $contactFormPhone: $("#phone2"),
+        $contactFormCompany: $("#company2"),
+        $contactFormSite: $("#site2"),
+
         $confirmMessage: $("#ajaxsuccess"),
+
         $errorMessages: $(".error"),
+
         $errorName: $("#err-name"),
         $errorEmail: $("#err-emailvld"),
-        $errorMessage: $("#err-message"),
+
         $errorForm: $("#err-form"),
         $errorTimeout: $("#err-timedout"),
         $errorState: $("#err-state"),
@@ -87,7 +92,8 @@ jQuery(function ($) {
             var error = false; // we will set this true if the form isn't valid
 
             var name = this.$contactFormName.val(); // get the value of the input field
-            if(name == "" || name == " " || name == "Name") {
+
+            if(name === "" || name === " ") {
                 this.$errorName.show(500);
                 this.$errorName.delay(4000);
                 this.$errorName.animate({
@@ -101,11 +107,9 @@ jQuery(function ($) {
             var email_compare = /^([a-z0-9_.-]+)@([da-z.-]+).([a-z.]{2,6})$/; // Syntax to compare against input
             var email = this.$contactFormEmail.val().toLowerCase(); // get the value of the input field
 
-            if (email == "" || email == " " || email == "E-mail") { // check if the field is empty
+            if (email === "" || email === " " || !email_compare.test(email)) { // check if the field is empty
                 this.$contactFormEmail.fadeIn('slow'); // error - empty
-                error = true;
-            }
-            else if (!email_compare.test(email)) { // if it's not empty check the format against our email_compare variable
+
                 this.$errorEmail.show(500);
                 this.$errorEmail.delay(4000);
                 this.$errorEmail.animate({
@@ -116,20 +120,7 @@ jQuery(function ($) {
                 error = true;
             }
 
-            var message = this.$contactFormMessage.val(); // get the value of the input field
-
-            if(message == "" || message == " " || message == "Message") {
-                this.$errorMessage.show(500);
-                this.$errorMessage.delay(4000);
-                this.$errorMessage.animate({
-                    height: 'toggle'
-                }, 500, function() {
-                    // Animation complete.
-                });
-                error = true; // change the error state to true
-            }
-
-            if(error == true) {
+            if(error === true) {
                 this.$errorForm.show(500);
                 this.$errorForm.delay(4000);
                 this.$errorForm.animate({
@@ -145,11 +136,14 @@ jQuery(function ($) {
         contactFormSubmit: function (obj) {
             this.$errorMessages.fadeOut('slow'); // reset the error messages (hides them)
 
-            if(this.validate() == false) {
+            if(this.validate() === false) {
 
                 var data_string = $('#ajax-form').serialize(); // Collect data from form
 
                 var $this = this;
+
+                $this.$contactFormBtn.html('Aguarde...');
+
                 $.ajax({
                     type: "POST",
                     url: $this.$contactForm.attr('action'),
@@ -157,14 +151,14 @@ jQuery(function ($) {
                     timeout: 6000,
                     cache: false,
                     crossDomain: false,
-                    error: function(request,error) {
+                    error: function(request, error) {
                         if (error == "timeout") {
                             $this.$errorTimeout.slideDown('slow');
-                        }
-                        else {
+                        } else {
                             $this.$errorState.slideDown('slow');
                             $this.$errorState.html('An error occurred: ' + error + '');
                         }
+                        $this.$contactFormBtn.html('Enviar');
                     },
                     success: function() {
                         $this.$confirmMessage.show(500);
@@ -176,7 +170,10 @@ jQuery(function ($) {
 
                         $this.$contactFormName.val('');
                         $this.$contactFormEmail.val('');
-                        $this.$contactFormMessage.val('');
+                        $this.$contactFormPhone.val('');
+                        $this.$contactFormCompany.val('');
+                        $this.$contactFormSite.val('');
+                        $this.$contactFormBtn.html('Enviar');
                     }
                 });
             }
@@ -188,7 +185,6 @@ jQuery(function ($) {
         },
         init: function () {
             //initializing the contact form
-            console.log('Contact form is initialized');
             this.bindEvents();
             return this;
         }
