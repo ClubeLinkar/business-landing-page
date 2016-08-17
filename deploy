@@ -1,2 +1,5 @@
 #!/bin/sh
-scp -r src/* root@lkr-http:/www_b2b_linkar/
+rm -rf dist/
+gulp build
+ssh root@lkr-http rm -rf /www_b2b_linkar/*
+scp -r dist/* root@lkr-http:/www_b2b_linkar/

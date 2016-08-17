@@ -2,6 +2,14 @@
 
 var gulp = require('gulp');
 
+var imagemin = require('gulp-imagemin');
+
+var cleanCSS = require('gulp-clean-css');
+
+var uglify = require('gulp-uglify');
+
+var pump = require('pump');
+
 var paths = gulp.paths;
 
 var $ = require('gulp-load-plugins')({
@@ -65,16 +73,31 @@ gulp.task('html', ['inject', 'partials'], function () {
 });
 
 gulp.task('images', function () {
-  return gulp.src(paths.src + '/assets/images/**/*')
-    .pipe(gulp.dest(paths.dist + '/assets/images/'));
+  return gulp.src(paths.src + '/images/**/*')
+    .pipe(gulp.dest(paths.dist + '/images/'));
+});
+
+gulp.task('css', function () {
+  return gulp.src(paths.src + '/css/**/*')
+    .pipe(gulp.dest(paths.dist + '/css/'));
+});
+
+gulp.task('scripts', function () {
+  return gulp.src(paths.src + '/js/**/*')
+    .pipe(gulp.dest(paths.dist + '/js/'));
 });
 
 gulp.task('fonts', function () {
-  return gulp.src($.mainBowerFiles())
-    .pipe($.filter('**/*.{eot,svg,ttf,woff,woff2}'))
-    .pipe($.flatten())
+  return gulp.src(paths.src + '/fonts/**/*')
     .pipe(gulp.dest(paths.dist + '/fonts/'));
 });
+
+// gulp.task('fonts', function () {
+//   return gulp.src($.mainBowerFiles())
+//     .pipe($.filter('**/*.{eot,svg,ttf,woff,woff2}'))
+//     .pipe($.flatten())
+//     .pipe(gulp.dest(paths.dist + '/fonts/'));
+// });
 
 gulp.task('fontawesome', function () {
     return gulp.src('bower_components/fontawesome/fonts/*.{eot,svg,ttf,woff,woff2}')
@@ -95,5 +118,26 @@ gulp.task('clean', function (done) {
   $.del([paths.dist + '/', paths.tmp + '/'], done);
 });
 
+gulp.task('imagemin', function () {
+  return gulp.src('src/images/**/*')
+       .pipe(imagemin())
+       .pipe(gulp.dest('dist/images'))
+});
 
-gulp.task('build', ['html', 'images', 'fonts', 'fontawesome','bootstrapfonts','misc']);
+gulp.task('cssmin', function() {
+  return gulp.src('src/css/**/*.css')
+    .pipe(cleanCSS({compatibility: 'ie8'}))
+    .pipe(gulp.dest('dist/css'));
+});
+
+// gulp.task('jsmin', function (cb) {
+//   pump([
+//     gulp.src('src/js/**/*.js'),
+//     uglify(),
+//     gulp.dest('dist/js')
+//   ], cb);
+// });
+
+
+
+gulp.task('build', ['html', 'images', 'css', 'scripts', 'fonts', 'fontawesome','bootstrapfonts','misc', 'imagemin', 'cssmin']);
